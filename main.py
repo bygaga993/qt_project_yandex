@@ -14,6 +14,8 @@ import pandas as pd  # библиотке для работы с данными
 
 import xlrd  # библиотека для работы с excel файлами
 
+import traceback
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -55,10 +57,12 @@ class MainWindow(QMainWindow):
             self.format_file = 1
 
     def open_file(self):  # получение пути файла для работы с ним
+        self.clear_lines()
         if self.format_file == 0:
             if check_log.FLAG is False:  # проверка на то, что пользователь вошел в аккаунт
                 self.statusBar().showMessage('Войдите пожалуйста в аккаунт')
                 return
+            self.statusBar().clearMessage()
             fname = QFileDialog.getOpenFileName(self, 'Выбрать csv файл ', '',
                                                 'csv файл (*.csv)')[0]
             d = self.lineEdit.text()
@@ -70,6 +74,7 @@ class MainWindow(QMainWindow):
             if check_log.FLAG is False:  # проверка на то, что пользователь вошел в аккаунт
                 self.statusBar().showMessage('Войдите пожалуйста в аккаунт')
                 return
+            self.statusBar().clearMessage()
             fname = QFileDialog.getOpenFileName(self, 'Выбрать xls файл ', '',
                                                 'xls файл (*.xls);;xlsx файл (*.xlsx')[0]
             self.excel_file(fname)
@@ -78,6 +83,7 @@ class MainWindow(QMainWindow):
                 if check_log.FLAG is False:  # проверка на то, что пользователь вошел в аккаунт
                     self.statusBar().showMessage('Войдите пожалуйста в аккаунт')
                     return
+                self.statusBar().clearMessage()
                 fname = QFileDialog.getOpenFileName(self, 'Выбрать sql файл ', '',
                                                     'sql файл (*.db)')[0]
                 self.workwithsql = DBSample(fname)  # при работе с sql бд открывается специальный виджет
@@ -134,6 +140,7 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage('Возникла ошибка, убедитесь, что вы корректно выбрали файл')
 
     def start(self):
+        self.clear_lines()
         # работа с мерами центральной тенденции в данных
         if self.format_file == 0:
             df = pd.read_csv(self.fname)
@@ -188,6 +195,11 @@ class MainWindow(QMainWindow):
                 self.tableWidget.setItem(i, j, QTableWidgetItem(str(row.iloc[j])))
         for el in header:
             self.column_comboBox.addItem(el)
+
+    def clear_lines(self):
+        self.modeline.setText('')
+        self.avgline.setText('')
+        self.medianline.setText('')
 
 
 class DBSample(QWidget):  # виджет для работы с sql таблицами
