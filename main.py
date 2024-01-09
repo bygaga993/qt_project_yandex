@@ -197,8 +197,6 @@ class MainWindow(QMainWindow):
             self.column_comboBox.addItem(el)
 
     def clear_lines(self):
-        self.column_comboBox.clear()
-        self.tableWidget.clear()
         self.modeline.setText('')
         self.avgline.setText('')
         self.medianline.setText('')
